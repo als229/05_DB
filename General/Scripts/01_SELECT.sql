@@ -243,7 +243,7 @@ FROM
 SELECT 
 	DIDEPT_CODE
 FROM 
-	EMPLOYEE ;
+	EMPLOYEE ; --23행 조회
 
 -- 사원들이 속한 부서 코드 조회
 -- => 사원이 있는 부서만 조회
@@ -251,11 +251,290 @@ SELECT
 	DISTINCT DEPT_CODE
 FROM 
 	EMPLOYEE ; -- 7행 조회(중복 X)
+	
+	
+-------------------------------------------------------------------------------------------------
+	
+/* [SELECT 작성법 - 2]
+ * 
+ * 3) SELECT 컬럼명 || 리터럴, ... -- 열선택
+ * 1) FROM 테이블명 -- 테이블 선택
+ * 2) WHERE 조건식; -- 행 선택 
+ */
+
+/* *** WHERE 절 ***
+ * 
+ * - 테이블에서 조건을 충족하는 행을 조회할 때 사용
+ * 
+ * - WHERE 절에는 조건식(결과가 T/F)만 작성 가능
+ * 
+ * - 비교 연산자 : >, <, >=, <= , =(같다), !=, <>(같지 않다)
+ * - 논리 연산자 : AND, OR, NOT
+ */
+	
+-- EMPLOYEE 테이블에서
+-- 급여가 400만원을 초과하는 사원의 
+-- 사번, 이름, 급여를 조회
+SELECT EMP_ID ,EMP_NAME ,SALARY 
+FROM EMPLOYEE 
+WHERE SALARY > 4000000;
+
+-- EMPLOYEE 테이블에서
+-- 급여가 500만원 이하인 사원의 
+-- 사번, 이름, 급여, 부서코드, 직급코드를 조회
+SELECT 
+	EMP_ID ,
+	EMP_NAME ,
+	SALARY ,
+	DEPT_CODE ,
+	JOB_CODE 
+FROM 
+	EMPLOYEE 
+WHERE 
+	SALARY <=5000000;
+
+-- EMPLOYEE 테이블에서
+-- 연봉이 5천만원 이하인 사원의
+-- 이름, 연봉 조회
+SELECT 
+	EMP_NAME ,
+	SALARY*12 AS 연봉
+FROM 
+	EMPLOYEE 
+WHERE 
+	SALARY * 12 <= 50000000;
+
+-- 이름이 '노옹철'인 사원의
+-- 사번, 이름, 전화번호 조회
+SELECT 
+	EMP_ID ,
+	EMP_NAME ,
+	PHONE 
+FROM 
+	EMPLOYEE 
+WHERE 
+	EMP_NAME = '노옹철';
+
+-- 부서 코드(DEPT_CODE)가 'D9'이 아닌 사원의
+-- 이름, 부서 코드 조회
+SELECT 
+	EMP_NAME ,
+	DEPT_CODE 
+FROM 
+	EMPLOYEE 
+WHERE 
+	DEPT_CODE != 'D9'; -- DEPT_CDOE <> 'D9' 이랑 같음
+
+-- 부서 코드(DEPT_CODE)가 'D9'인 사원의
+-- 이름, 부서 코드 조회
+SELECT 
+	EMP_NAME ,
+	DEPT_CODE 
+FROM 
+	EMPLOYEE 
+WHERE 
+	DEPT_CODE = 'D9'; -- DEPT_CDOE <> 'D9' 이랑 같음
+
+-- 전체 23명인데 위에 코드 두개 치면 21 명 나옴 두명 NULL
+
+/* *** NULL ***
+ * 
+ * - DB에서 NULL : 빈칸 (저장된 값 없음)
+ * 
+ * - NULL은 비교 대상이 없기 때문에 
+ * 	 =, != 등의 비교 연산 결과가 무조건 FALSE
+ */
+
+/* *** NULL 비교 연산 ***
+ * 
+ * 1) 컬럼명 IS NULL : 해당 컬럼 값이 NULL 이면 TRUE 반환
+ * 
+ * 2) 컬럼명 IS NOT NULL : 해당 컬럼 값이 NULL이 아니면 TRUE 반환 
+ * 												 => 컬럼의 값이 존재하면 TRUE
+ * 
+ * (컬럼 값의 존재 유무를 비교하는 연산)
+ */
+	
+-- EMPLOYEE 테이블에서
+-- 부서코드가 없는 사원의
+-- 사번, 이름, 부서코드 조회
+SELECT 
+	EMP_ID ,
+	EMP_NAME ,
+	DEPT_CODE 
+FROM EMPLOYEE 
+WHERE DEPT_CODE IS NULL; --> DEPT_CODE = NULL 은 안됨!! '=' 은 값 비교 NULL은 그냥 빈칸
+
+-- BONUS가 존재하는 사원의
+-- 이름, 보너스 조회
+SELECT 
+	EMP_NAME ,
+	BONUS 
+FROM 
+	EMPLOYEE 
+WHERE 
+	BONUS IS NOT NULL;
+
+----------------------------------------------------------------------------------------------
+/* *** 논리 연산자(AND/OR) ***
+ * 
+ * - 두 조건식의 결과에 따라 새로운 결과를 만드는 연산
+ * 
+ * - AND(그리고) 
+ *  두 연산자의 결과가 TRUE 일 때만 최종 결과 TRUE
+ *  => 두 조건을 모두 만족하는 행만 
+ * 		 결과 집합(RESULT SET)에 포함 
+ * 
+ * - OR(또는)
+ *  두 연산자의 결과가 FALSE 일 때만 최종 결과 FALSE
+ *  => 두 조건중 하나라도 만족하는 행을
+ * 		 결과 집합(RESULT SET)에 포함 
+ * 
+ * - 우선 순위 : AND > OR 
+ */
+
+-- EMPLOYEE 테이블에서
+-- 부서코드가 'D6'인 사원 중
+-- 급여가 400만원을 초과하는 사원의
+-- 사번, 이름, 부서코드, 급여 조회
+SELECT 
+	EMP_ID ,
+	EMP_NAME ,
+	DEPT_CODE ,
+	SALARY 
+FROM 
+	EMPLOYEE 
+WHERE 
+	DEPT_CODE = 'D6'
+	AND SALARY > 4000000;
+
+-- EMPLOYEE 테이블에서
+-- 급여가 300만 이상, 500만 미만인 사원의
+-- 사번, 이름, 급여 조회
+SELECT 
+	EMP_ID ,
+	EMP_NAME ,
+	SALARY 
+FROM 
+	EMPLOYEE 
+WHERE 
+	SALARY >= 3000000
+	AND SALARY < 5000000;
 
 
+-- EMPLOYEE 테이블에서
+-- 급여가 300만 미만 또는 500만 이상인 사원의
+-- 사번, 이름, 급여 조회
+SELECT EMP_ID ,EMP_NAME, SALARY 
+FROM EMPLOYEE 
+WHERE SALARY < 3000000 OR SALARY >= 5000000;
 
+------------------------------------------------------------------------------------------------------
 
+/* 컬럼명 BETEWEEN (A) AND (B)
+ * 
+ * - 컬럼 값이 A 이상 B 이하인 경우 TRUE(조회하겠다)
+ */
 
+-- EMPLOYEE 테이블에서
+-- 급여가 400만 ~ 600만인 사원 조회
+-- 이름, 급여
+SELECT EMP_NAME , SALARY 
+FROM EMPLOYEE 
+WHERE SALARY BETWEEN 4000000 AND 6000000; 
+
+-------------------------------------------------------------------------------------------------------
+
+/* 컬럼명 NOT BETEWEEN (A) AND (B)
+ * 
+ * - 컬럼 값이 A 이상 B 이하인 경우 FALSE
+ *  => (A)미만, (B) 초과인 경우 TRUE
+ */
+-- EMPLOYEE 테이블에서
+-- 급여가 400만 ~ 600만원이 아닌 사원 조회
+-- 이름, 급여
+SELECT EMP_NAME , SALARY 
+FROM EMPLOYEE 
+WHERE SALARY NOT BETWEEN 4000000 AND 6000000; 
+
+/* 날짜 비교에 더 많이 사용!!! */
+
+-- EMPLOYEE 테이블에서
+-- 2010년대(20100101 ~ 2019.12.31)
+-- 입사한 사원의 이름, 입사일 조회
+SELECT EMP_NAME ,HIRE_DATE 
+FROM EMPLOYEE 
+WHERE HIRE_DATE BETWEEN TO_DATE('2010.01.01','YYYY.MM.DD') AND TO_DATE('2019.12.31','YYYY.MM.DD');
+
+------------------------------------------------------------------------------------------------------
+
+/* 일치하는 값만 조회 */
+
+-- 부서 코드가 'D5', 'D6', 'D9' 인 사원의
+-- 사번, 이름, 부서코드 조회
+SELECT EMP_ID ,EMP_NAME ,DEPT_CODE 
+FROM EMPLOYEE 
+WHERE DEPT_CODE = 'D5' OR DEPT_CODE = 'D6' OR DEPT_CODE = 'D9';
+
+/* 컬럼명 IN (값1, 값2, 값3 ...)
+ * 
+ * - 컬럼 값이 IN () 안에 존재 한다면 TRUE
+ *  == 연속으로 OR 연산을 작성한 것과 같은 효과
+ */
+
+-- 부서 코드가 'D5', 'D6', 'D9' 인 사원의
+-- 사번, 이름, 부서코드 조회
+SELECT EMP_ID ,EMP_NAME ,DEPT_CODE 
+FROM EMPLOYEE 
+WHERE DEPT_CODE IN ('D5', 'D6', 'D9');
+
+/* 컬럼명 NOT IN (값1, 값2, 값3 ...)
+ * 
+ * - 컬럼 값이 IN () 안에 존재 한다면 FALSE
+ *  == 값이 포함되지 않는 행만 조회
+ */
+
+-- 부서 코드가 'D5', 'D6', 'D9' 가 아닌 사원의
+-- 사번, 이름, 부서코드 조회
+SELECT EMP_ID ,EMP_NAME ,DEPT_CODE 
+FROM EMPLOYEE 
+WHERE DEPT_CODE NOT IN ('D5', 'D6', 'D9');
+-- DEPT_CODE가 NULL인 사원은 포함 X
+
+-- 부서 코드가 'D5', 'D6', 'D9'이 아닌 사원 조회
+-- + NULL인 사원도 포함
+SELECT EMP_ID ,EMP_NAME ,DEPT_CODE 
+FROM EMPLOYEE 
+WHERE DEPT_CODE NOT IN ('D5', 'D6', 'D9')
+	OR DEPT_CODE IS NULL; 
+
+------------------------------------------------------------------------------------------------------
+
+/* *** LIKE(같은, 비슷한) *** 
+ * 
+ * - 비교하려는 값이 특정한 패턴을 만족하면 조회하는 연산자
+ * 
+ * [작성법]
+ * WHERE 컬럼명 LIKE '패턴'
+ *
+ * [패턴에 사용되는 기호(와일드카드)]
+ * 
+ * 1) '%'(포함)
+ * '%A' : A로 끝나는 문자열인 경우 TRUE
+ * 			=> 앞 쪽에는 어떤 문자열이든 관계 없음(빈 칸도 가능)
+ * 
+ * 'A%' : A로 시작하는 문자열인 경우 TRUE
+ * 
+ * '%A%' : A를 포함한 문자열인 경우  TRUE
+ * 
+ * 2) '_' (글자 수, _1개당 1글자)
+ * 
+ * ___ : 문자열이 3글자인 경우 TRUE
+ * 
+ * A___ : A로 시작하고 뒤에 3글자인 경우 TRUE
+ * 				EX) ABCD (TRUE) , ABCDE(FALSE)
+ *  
+ */
 
 
 
