@@ -534,12 +534,209 @@ WHERE DEPT_CODE NOT IN ('D5', 'D6', 'D9')
  * A___ : A로 시작하고 뒤에 3글자인 경우 TRUE
  * 				EX) ABCD (TRUE) , ABCDE(FALSE)
  *  
+ * ___ A : 앞에 3글자, 마지막은 A로 끝나는 경우 TRUE
  */
 
+-- EMPLOYEE 테이블에서
+-- 성이 '전' 씨인 사원 찾기
+SELECT *
+FROM EMPLOYEE 
+WHERE EMP_NAME LIKE '전%';
+
+-- EMPLOYEE 테이블에서
+-- 이름이 '수' 로 끝나는 사원 찾기
+SELECT *
+FROM EMPLOYEE 
+WHERE EMP_NAME LIKE '%수';
+
+-- 이름에 '하'가 포함된 사원 찾기
+SELECT *
+FROM EMPLOYEE 
+WHERE EMP_NAME LIKE '%하%';
+
+-- 전화번호가 010으로 시작하는 사원의
+-- 이름, 전화번호 조회
+SELECT EMP_NAME , PHONE 
+FROM EMPLOYEE 
+WHERE PHONE LIKE '010%';
+--     ||
+SELECT EMP_NAME , PHONE 
+FROM EMPLOYEE 
+WHERE PHONE LIKE '010________';
+
+-- EMAIL 컬럼에서 @ 앞에 아이디 글자 수가 5글자인 사원의
+-- 사번, 이름, 이메일조회
+SELECT EMP_ID , EMP_NAME , EMAIL 
+FROM EMPLOYEE 
+WHERE EMAIL  LIKE '_____@%';
+
+-- EMAIL 아이디 중 '_' 앞 글자 수가 3글자인 사원의
+-- 사번, 이름, 이메일 조회
+SELECT EMP_ID , EMP_NAME , EMAIL 
+FROM EMPLOYEE 
+WHERE EMAIL LIKE '____%'; -- 전체조회가 됨
+--> "EMAIL 이 4글자 이상이면 조회" 라는 의미로 해석
+
+/* 발생한 문제 :
+ * "구분자"로 사용하려던 '_'가 LIKE의 와일드카드 '_' 로 해석되면서 문제 발생
+ * 
+ * [해결 방법]
+ * - LIKE ESCAPE OPTION 이용
+ * => 지정된 특수 문자 뒤 '딱 한 글자'를 와일드 카드가 아닌 단순 문자열로 인식시키는 옵션
+ * 
+ * - 작성법
+ *  WHERE LIKE '___#_' ESCAPE '#'
+ *  # 말고 아무거나 상관 없음
+ */
+SELECT EMP_ID , EMP_NAME , EMAIL 
+FROM EMPLOYEE 
+WHERE EMAIL LIKE '___#_%' ESCAPE '#'; 
+
+-------------------------------------------------------------------------------------------------
+
+/* [SELECT 작성법 - 3]
+ * 
+ * 3) SELECT 컬럼명		   -- 열 선택 
+ * 1) FROM   테이블명    -- 테이블 선택
+ * 2) WHERE  조건식		   -- 행 선택
+ * 4) ORDER BY 정렬기준	 -- 조회 결과 정렬
+ * 
+ * *** ORDER BY 절 ***
+ * - SELECT 의 조회 결과 집합(RESULT SET)을
+ *   원하는 순서로 정렬할 때 사용하는 구문
+ * 
+ * - 작성법
+ * 
+ * ORDER BY 컬럼명 | 별칭 | 컬럼순서 | 함수 | 프로시저
+ * 					[ASC / DESC] (오름차순 / 내림차순)
+ *          [NULLS FIRST / NULLS LAST] (NULL 데이터 위치 지정) 
+ * ** 중요!!! **
+ * ORDER BY 절은 해당 SELECT 문 제일 마지막에만 수행!!!
+ * 
+ * - 오름차순(ASCENDING) : 점점 커지는 순서로 정렬
+ * EX) 1 -> 10, A -> Z, 가 -> 하, 과거 -> 미래
+ * 
+ * - 내림차순(DESCENDING) : 점점 작아지는 순서로 정렬
+ * EX) 10 -> 1, Z -> A, 하 -> 가, 미래 -> 과거
+ */
+
+-- EMPLOYEE 테이블의 모든 사원을 
+-- 이름 오름 차순으로 정렬하여 조회
+SELECT EMP_NAME 
+FROM EMPLOYEE
+ORDER BY EMP_NAME ASC;
+
+-- 급여 내림 차순으로 이름, 급여 조회
+SELECT EMP_NAME , SALARY 
+FROM EMPLOYEE 
+ORDER BY SALARY DESC;
+
+-- + WHERE 절 추가
+
+-- 부서 코드가 'D5', 'D6', 'D9'인 사원의
+-- 사번, 이름, 급여, 부서코드
+-- 급여 내림 차순으로 조회
+SELECT EMP_ID , EMP_NAME , SALARY , DEPT_CODE 
+FROM EMPLOYEE 
+WHERE DEPT_CODE IN('D5', 'D6', 'D9')
+ORDER BY SALARY DESC;
+
+-- 부서 코드가 'D5', 'D6', 'D9'인 사원의
+-- 사번, 이름, 급여, 부서코드
+-- 부서코드 오름 차순으로 조회
+SELECT EMP_ID , EMP_NAME , SALARY , DEPT_CODE 
+FROM EMPLOYEE 
+WHERE DEPT_CODE IN('D5', 'D6', 'D9')
+ORDER BY DEPT_CODE ASC;
+
+--------------------------------------------------------------------------------------------
+
+/* 별칭을 이용하여 정렬하기 
+ * 
+ * - ORDER BY 절은 제일 마지막에 해석된다!!!
+ * 
+ * - ORDER BY절 보다 먼저 해석되는 SELECT절의 작성된 별칭을 ORDER BY 절에서 인식할 수 있다.
+ * 
+ *  ?? 그럼 SELECT 절 보다 먼저 해석되는 WHERE 절에서 별칭 사용이 가능할까???
+ * 	=> 안됨!!!
+ * */
+-- 사번, 이름, 연봉 조회
+-- 연봉 오름 차순으로 정렬
+SELECT EMP_ID AS 사번 , EMP_NAME AS 이름 , SALARY*12 AS 연봉 
+FROM EMPLOYEE 
+ORDER BY 연봉 ASC; -- 별칭 이용
+
+-- 연봉을 5천만원 이상 받는 사원의
+-- 사번, 이름, 연봉 조회
+-- 연봉 오름 차순으로 정렬
+SELECT EMP_ID AS 사번 , EMP_NAME AS 이름 , SALARY*12 AS 연봉 
+FROM EMPLOYEE 
+--WHERE 연봉 > 50000000 -- 오류 발생! -> 아직 별칭 인식 전
+WHERE SALARY * 12 > 50000000 
+ORDER BY 연봉 ASC; -- 별칭 이용
+
+---------------------------------------------------------------------------------------------
+
+/* 컬럼 순서를 이용하여 정렬하기 
+ * 
+ * - SELECT 절이 해석되면 조회하려는 컬럼이 지정되면서 컬럼의 순서도 같이 지정된다.(가능O, 권장X)
+ * */
+
+-- 급여가 400만 이상, 600만 이하인 사원의
+-- 사번, 이름, 급여를
+-- 급여 내림차순으로 조회
+SELECT EMP_ID , EMP_NAME , SALARY 
+FROM EMPLOYEE 
+WHERE SALARY BETWEEN 4000000 AND 6000000
+ORDER BY 3 DESC; -- 3번째 값인 SALARY 로 조회가 됨 신기방귀
+
+---------------------------------------------------------------------------------------------
+
+/* SELECT 절에 작성되지 않은 컬럼을 이용해 정렬하기 */
+
+-- 모든 사원의 사번, 이름을
+-- 부서코드 오름차순으로 조회
+SELECT EMP_ID , EMP_NAME 
+FROM EMPLOYEE 
+ORDER BY DEPT_CODE ASC;
+-- ORDER BY 절 해석 전
+-- SELECT, FROM 절 모두 해석되어있기 때문에
+-- SELECT 절에 없는 컬럼을 작성해도 정렬이 가능.
+
+-----------------------------------------------------------------------------------------------
+
+/* NULLS FRIST, NULLS LAST 확인 */
+
+SELECT EMP_NAME , BONUS 
+FROM EMPLOYEE 
+ORDER BY BONUS ASC; -- 기본값이 NULLS LAST
+-- 오름차순 기본값 : NULLS LAST
+
+SELECT EMP_NAME , BONUS 
+FROM EMPLOYEE 
+ORDER BY BONUS DESC; -- 기본값이 NULLS FIRST
+-- 내림차순 기본값 : NULLS FIRST
 
 
+-----------------------------------------------------------------------------------------------
 
+/* 정렬 기준 "중첩" 작성 
+ * 
+ * - 먼저 작성된 정렬을 적용하고 그 안에서 형성된 그룹별로 정렬 진행
+ * 
+ * - 형성되는 그룹 == 같은 컬럼 값을 가지는 행
+ * */
 
+-- EMPLOYEE 테이블에서
+-- 이름, 부서코드, 급여를
+-- 부서코드 오름차순, 급여 내림차순으로 정렬해서 조회
+SELECT EMP_NAME , DEPT_CODE , SALARY 
+FROM EMPLOYEE 
+ORDER BY DEPT_CODE ASC, SALARY DESC;
 
-
-
+-- EMPLOYEE 테이블에서
+-- 이름, 부서코드, 직급코드를 조회
+-- 부서코드 오름차순, 직급코드 내림차순, 이름 오름차순
+SELECT EMP_NAME 이름, DEPT_CODE 부서코드, JOB_CODE 직급코드
+FROM EMPLOYEE 
+ORDER BY 부서코드 ASC, 직급코드 DESC, 이름 ASC;
