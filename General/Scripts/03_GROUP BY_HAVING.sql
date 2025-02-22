@@ -255,12 +255,17 @@ WHERE DEPT_CODE IS NULL;
 -- UNION : 여러개의 쿼리 결과를 하나로 합치는 연산자
 -- 중복된 영역을 제외하여 하나로 합친다.
 
-
+-- 부서코드가 'D5'인 사원의 이름, 부서코드 조회
+SELECT EMP_ID , DEPT_CODE , JOB_CODE 
+FROM EMPLOYEE  
+WHERE DEPT_CODE = 'D5';
 
 -- INTERSECT : 여러개의 SELECT한 결과에서 공통 부분만 결과로 추출 (교집합)
 
-
-
+-- 직급 코드가 'J7' 인 사원의 이름, 부서코드, 직급
+SELECT EMP_NAME ,DEPT_CODE , JOB_CODE 
+FROM EMPLOYEE e 
+WHERE JOB_CODE = 'J7';
 
 -- UNION ALL : 여러개의 쿼리 결과를 하나로 합치는 연산자
 -- UNION과의 차이점은 중복영역을 모두 포함시킨다. (합집합 +  교집합)
