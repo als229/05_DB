@@ -668,12 +668,3 @@ SELECT
 	COUNT(DECODE(SUBSTR( EMP_NO, 8,1), '2', '여자')) AS 여자,	
 	COUNT(DECODE(SUBSTR( EMP_NO, 8,1), '1', '남자')) AS 남자	
 FROM EMPLOYEE ;
-
-
-
-
-
-
-
-
-
