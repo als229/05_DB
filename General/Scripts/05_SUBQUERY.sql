@@ -381,8 +381,6 @@ JOIN
 	JOB J ON (E.JOB_CODE = J.JOB_CODE)
 ORDER BY 구분;
 
-
-
 -- 대리 직급의 직원들 중에서 과장 직급의 최소 급여보다 많이 받는 직원의
 -- 사번, 이름, 직급, 급여를 조회하세요
 -- 단, > ANY 혹은 < ANY 연산자를 사용하세요
@@ -696,6 +694,7 @@ WHERE
 			SUB.EMP_ID = MAIN.MANAGER_ID 
 									/* MAIN의 MANAGER_ID */
 	);
+
 
 /* [상호연관 서브쿼리 해석 순서]
  * 
