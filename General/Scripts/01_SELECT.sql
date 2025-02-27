@@ -19,6 +19,8 @@
  * - 트랜잭션 제어 언어
  * - Transction : 데이터 변경사항(DML)을 묶어 관리하는 DB의 논리적 연산 단위
  * 
+ * DCL(Data Conroll Language) : 데이터 제어 언어
+ * - 계정별로 권한 제어(부여, 회수)
  */
 --------------------------------------------------------------------------
 /* [SELECT 작성법]
@@ -140,6 +142,18 @@
  * 
  * [DROP TABLE 테이블명 CASCADE CONSTRAINTS]
  * - 삭제되는 테이블과 관계를 맺기 위한 제약조건(FK)도 모두 삭제
+ */
+
+/* DCL(Data Conroll Language) : 데이터 제어 언어
+ * - 계정별로 권한 제어(부여, 회수)
+ * 
+ * GRANT 권한 ... TO 사용자명;
+ * 
+ * REVOKE 권한 ... FROM 사용자명;
+ * 
+ * ROLE(역할) : 권한의 묶음 
+ * - CONNECT : 접속 권한
+ * - RESOURCE : 기본 객체 8개 생성 권한
  */
 
 
@@ -886,3 +900,22 @@ ORDER BY DEPT_CODE ASC, SALARY DESC;
 SELECT EMP_NAME 이름, DEPT_CODE 부서코드, JOB_CODE 직급코드
 FROM EMPLOYEE 
 ORDER BY 부서코드 ASC, 직급코드 DESC, 이름 ASC;
+
+
+
+			SELECT EMP_NO, EMP_NAME, DEPT_TITLE, JOB_NAME 
+			FROM EMPLOYEE E 
+			JOIN DEPARTMENT D ON (E.DEPT_CODE = D.DEPT_ID) 
+			JOIN JOB J ON (E.JOB_CODE = J.JOB_CODE) 
+			WHERE DEPT_TITLE =  '총무부'
+			ORDER BY DEPT_CODE DESC;
+
+
+SELECT E.EMP_NO, E.EMP_NAME, D.DEPT_TITLE, J.JOB_NAME  
+FROM EMPLOYEE E JOIN DEPARTMENT D ON (E.DEPT_CODE = D.DEPT_ID)  
+JOIN JOB J ON (E.JOB_CODE = J.JOB_CODE) 
+WHERE DEPT_TITLE =  '총무부' 
+ORDER BY DEPT_CODE DESC;
+
+SELECT E.EMP_NO, E.EMP_NAME, D.DEPT_TITLE, J.JOB_NAME  FROM EMPLOYEE E JOIN DEPARTMENT D ON (E.DEPT_CODE = D.DEPT_ID)  JOIN JOB J ON (E.JOB_CODE = J.JOB_CODE) WHERE DEPT_TITLE =  '총무부' ORDER BY DEPT_CODE DESC
+
